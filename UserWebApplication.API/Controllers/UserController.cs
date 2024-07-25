@@ -28,8 +28,8 @@ namespace UserWebApplication.API.Controllers
             await _userRepository.AddAsync(user);
         }
 
-        [HttpDelete("Delete")]
-        public async void Delete([FromBody] int id)
+        [HttpDelete("Delete/{id:int}")]
+        public async void Delete(int id)
         {
             _userRepository.Delete(id);
         }

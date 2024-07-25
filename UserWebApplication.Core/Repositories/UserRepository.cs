@@ -39,8 +39,12 @@ namespace UserWebApplication.Core.Repositories
         public void Delete(int id)
         {
             var userId = _context.Users.FirstOrDefault(u => u.Id == id);
-            ((DbContext)_context).Remove(userId);
-            ((DbContext)_context).SaveChanges();
+
+            if(userId != null) 
+            {
+                ((DbContext)_context).Remove(userId);
+                ((DbContext)_context).SaveChanges();
+            }            
         }
     }
 }
