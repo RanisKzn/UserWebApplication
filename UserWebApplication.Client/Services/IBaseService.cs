@@ -6,6 +6,8 @@ namespace UserWebApplication.Client.Services
     {
         Task<IEnumerable<TEntity>> GetAllAsync();
 
+        Task<TEntity> GetByIdAsync(int id);
+
         Task<HttpResponseMessage> DeleteAsync(int id);
 
         Task<HttpResponseMessage> CreateAsync(TEntity entity);

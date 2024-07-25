@@ -1,4 +1,6 @@
-﻿using UserWebApplication.Core.Entities;
+﻿using Newtonsoft.Json;
+using System.Net.Http;
+using UserWebApplication.Core.Entities;
 
 namespace UserWebApplication.Client.Services
 {
@@ -9,6 +11,14 @@ namespace UserWebApplication.Client.Services
         public UserService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
         {
 
+        }
+
+        public virtual async Task<User> LoginAsync(UserDto userDto)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"{BasePath}/Login", userDto);
+            var result = JsonConvert.DeserializeObject<User>(await response.Content.ReadAsStringAsync());
+
+            return result;
         }
     }
 }

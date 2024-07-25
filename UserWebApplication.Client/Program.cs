@@ -13,6 +13,7 @@ builder.Services.AddHttpClient("Api", client =>
 });
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddSingleton<IUserProvider, UserProvider>();
 
 var app = builder.Build();
 

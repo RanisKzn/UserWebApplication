@@ -1,0 +1,41 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components
+
+<!-- Шаблонный компонент для всего приложения -->
+<div class="app-layout">
+    <header class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Мой Приложение</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+
+            </ul>
+        </div>
+    </header>
+
+    <main role="main" class="container mt-4">
+        @Body
+    </main>
+
+    <footer class="footer bg-light text-center py-3 mt-auto">
+        <p class="mb-0">© 2024 Мой Приложение. Все права защищены.</p>
+    </footer>
+</div>
+
+<style>
+    .app-layout {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .navbar {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .footer {
+        border-top: 1px solid #ddd;
+    }
+</style>

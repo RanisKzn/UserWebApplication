@@ -1,0 +1,42 @@
+﻿@page "/users/add"
+@rendermode InteractiveServer
+@using UserWebApplication.Client.Services
+@using UserWebApplication.Core.Entities
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>Добавление пользователя</PageTitle>
+
+<div class="user-form">
+    <div class="form-group">
+        <label for="name">Имя</label>
+        <input id="name" class="form-control" @bind-value="User.Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Электронная почта</label>
+        <input id="email" class="form-control" @bind-value="User.Email" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Пароль</label>
+        <input id="password" class="form-control" @bind-value="User.Password" />
+    </div>
+
+    <button class="btn btn-primary" @onclick="async() => await AddUser()">Добавить</button>
+</div>
+
+@code {
+    [Inject]
+    protected UserService UserService { get; set; } = null!;
+
+    [Inject]
+    protected NavigationManager NavigationManager { get; set; } = null!;
+
+    private User User { get; set; } = new User();
+
+    private async Task AddUser()
+    {
+        await UserService.CreateAsync(User);
+        NavigationManager.NavigateTo("/users");
+    }
+}

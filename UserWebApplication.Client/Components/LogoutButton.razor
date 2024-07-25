@@ -1,0 +1,30 @@
+﻿@rendermode InteractiveServer
+@using UserWebApplication.Client.Services
+
+<div class="top-row px-4">
+    <a href="/">
+        @if (UserProvider.CurrentUser != null)
+        {
+            @UserProvider.CurrentUser.Name
+        }
+    </a>
+    <button @onclick="LogOut">
+        Выход
+    </button>
+</div>
+
+
+@code {
+    [Inject]
+    protected IUserProvider UserProvider { get; set; } = null!;
+
+    [Inject]
+    protected NavigationManager NavigationManager { get; set; } = null!;
+
+    public void LogOut()
+    {
+        UserProvider.CurrentUser = null!;
+
+        NavigationManager.NavigateTo("/");
+    }
+}

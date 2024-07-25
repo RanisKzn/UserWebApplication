@@ -9,7 +9,7 @@ namespace UserWebApplication.Client.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private readonly HttpClient _httpClient;
+        protected readonly HttpClient _httpClient;
 
         protected virtual string BasePath => $"{nameof(TEntity).ToLower()}";
 
@@ -43,6 +43,12 @@ namespace UserWebApplication.Client.Services
             var result = JsonConvert.DeserializeObject<TEntity>(await response.Content.ReadAsStringAsync());
 
             return result;
+        }
+
+        public virtual async Task<TEntity> GetByIdAsync(int id)
+        {
+            var result = await _httpClient.GetFromJsonAsync<TEntity>($"{BasePath}/GetById/{id}")!;
+            return result!;
         }
     }
 }

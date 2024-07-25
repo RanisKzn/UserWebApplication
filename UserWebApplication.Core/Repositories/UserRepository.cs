@@ -46,5 +46,20 @@ namespace UserWebApplication.Core.Repositories
                 ((DbContext)_context).SaveChanges();
             }            
         }
+
+        public async Task<User> Login(UserDto user)
+        {
+            if(user != null)
+            {
+                return await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == user.Password);
+            }
+
+            return null;
+        }
+
+        public async Task<User> GetIdAsync(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
     }
 }
