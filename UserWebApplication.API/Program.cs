@@ -1,4 +1,5 @@
 using UserWebApplication.Core.Repositories;
+using UserWebApplication.Core.Repositories;
 using UserWebApplication.Core.Repositories.Bases;
 using UserWebApplication.Db;
 
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+builder.Services.AddScoped<IRequestCategoryRepository, RequestCategoryRepository>();
 
 var app = builder.Build();
 

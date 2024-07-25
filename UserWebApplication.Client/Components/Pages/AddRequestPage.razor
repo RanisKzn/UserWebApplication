@@ -1,0 +1,70 @@
+﻿@page "/requests/add"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Forms
+@using UserWebApplication.Client.Services
+@using UserWebApplication.Core.Entities
+
+<PageTitle>Добавление заявки</PageTitle>
+
+<div class="Request-form">
+    <div class="form-group">
+        <label for="name">Заголовок заявки</label>
+        <input id="name" class="form-control" @bind-value="Request.Title" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Описание заявки</label>
+        <input id="email" class="form-control" @bind-value="Request.Description" />
+    </div>
+
+    <div class="form-group">
+        <label for="category">Категория заявки</label>
+        <select id="category" class="form-control" @bind="Request.RequestCategoryId">
+            <option value="">Выберите категорию</option>
+            @if (RequestCategories != null)
+            {
+                @foreach (var category in RequestCategories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <button class="btn btn-primary" @onclick="async() => await AddRequest()">Добавить</button>
+</div>
+
+@code {
+    [Inject]
+    protected RequestService RequestService { get; set; } = null!;
+
+    [Inject]
+    protected RequestCategoryService RequestCategoryService { get; set; } = null!;
+
+    [Inject]
+    protected IUserProvider UserProvider { get; set; } = null!;
+
+    [Inject]
+    protected NavigationManager NavigationManager { get; set; } = null!;
+
+    private Request Request { get; set; } = new Request();
+
+    private IEnumerable<RequestCategory> RequestCategories { get; set; } = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            RequestCategories = await RequestCategoryService.GetAllAsync();
+            StateHasChanged();
+        }
+    }
+
+    private async Task AddRequest()
+    {
+        Request.AuthorId = UserProvider.CurrentUser.Id;
+
+        await RequestService.CreateAsync(Request);
+        NavigationManager.NavigateTo("/requests");
+    }
+}
