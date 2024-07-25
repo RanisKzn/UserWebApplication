@@ -23,7 +23,6 @@ namespace UserWebApplication.Db
                 options.UseNpgsql(connectionString, o => {
                     o.CommandTimeout(600);
                     o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-                    o.MigrationsHistoryTable("__ef_migrations_history");
                 })
                 .UseSnakeCaseNamingConvention();
             });

@@ -1,0 +1,140 @@
+﻿@page "/requests"
+@using UserWebApplication.Client.Services
+@using UserWebApplication.Core.Entities
+@rendermode InteractiveServer
+
+<PageTitle>Заявки</PageTitle>
+
+<div class="user-table">
+    @if (Requests != null && Requests.Any())
+    {
+        if (IsLoading)
+        {
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status" />
+            </div>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Заголовок</th>
+                        <th>Автор заявки</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Requests)
+                    {
+                        <tr>
+                            <td>@request.Id</td>
+                            <td>@request.Title</td>
+                            <td>@request.Author?.Name</td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="() => EditRequest(request.Id)">Редактировать</button>
+                                <button class="btn btn-danger" @onclick="() => DeleteRequest(request.Id)">Удалить</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+    else
+    {
+        <p>Нет заявок для отображения.</p>
+    }
+
+    <button @onclick="AddRequest">Добавить заявку</button>
+</div>
+
+<style>
+    .user-table {
+        margin: 20px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #ddd;
+        }
+
+    .btn {
+        margin: 0 5px;
+    }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+</style>
+
+@code {
+    [Inject]
+    protected RequestService RequestService { get; set; } = null!;
+
+    [Inject]
+    protected NavigationManager NavigationManager { get; set; } = null!;
+
+    private IEnumerable<Request> Requests { get; set; } = null!;
+
+    private bool IsLoading { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await GetRequests();
+        }
+    }
+
+    private async Task GetRequests()
+    {
+        IsLoading = true;
+        StateHasChanged();
+
+        Requests = await RequestService.GetAllAsync();
+
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private void EditRequest(int id)
+    {
+        NavigationManager.NavigateTo($"/requests/edit/{id}");
+    }
+
+    private void AddRequest()
+    {
+        NavigationManager.NavigateTo("/requests/add");
+    }
+
+    private async Task DeleteRequest(int id)
+    {
+        await RequestService.DeleteAsync(id);
+
+        await GetRequests();
+    }
+}
