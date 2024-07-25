@@ -1,0 +1,68 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@layout LoginLayout
+@using UserWebApplication.Client.Components.Layout
+@using UserWebApplication.Client.Services
+@using UserWebApplication.Core.Entities
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>Авторизация</PageTitle>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <EditForm Model="@user" OnValidSubmit="@HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="alert alert-danger" />
+
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>Вход в систему</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <InputText id="email" class="form-control" @bind-Value="user.Email" placeholder="Введите email" />
+                            <ValidationMessage For="@(() => user.Email)" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Пароль</label>
+                            <InputText id="password" class="form-control" @bind-Value="user.Password" type="password" placeholder="Введите пароль" />
+                            <ValidationMessage For="@(() => user.Password)" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Войти</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private UserService UserService { get; set; } = null!;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    private IUserProvider UserProvider { get; set; } = null!;
+
+    private UserDto user = new UserDto();
+
+    private async void HandleSubmit()
+    {
+        UserProvider.CurrentUser = await UserService.LoginAsync(user);
+
+        if (UserProvider.CurrentUser != null)
+        {
+            NavigationManager.NavigateTo("/Home");
+        }
+        else
+        {
+            // You can provide a feedback here if login fails
+        }
+    }
+}

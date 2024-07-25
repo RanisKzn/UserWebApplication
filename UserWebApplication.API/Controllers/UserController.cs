@@ -22,14 +22,21 @@ namespace UserWebApplication.API.Controllers
             return users;
         }
 
+        [HttpGet("GetById/{id:int}")]
+        public async Task<User> GetById(int id)
+        {
+            var user = await _userRepository.GetIdAsync(id);
+            return user;
+        }
+
         [HttpPost("Add")]
         public async void Add([FromBody] User user)
         {
             await _userRepository.AddAsync(user);
         }
 
-        [HttpDelete("Delete")]
-        public async void Delete([FromBody] int id)
+        [HttpDelete("Delete/{id:int}")]
+        public async void Delete(int id)
         {
             _userRepository.Delete(id);
         }
@@ -38,6 +45,19 @@ namespace UserWebApplication.API.Controllers
         public async void Update([FromBody] User user)
         {
             await _userRepository.Update(user);
+        }
+
+        [HttpPost("Login")]
+        public async Task<User> Login([FromBody] UserDto userDto)
+        {
+            var user = await _userRepository.Login(userDto);
+
+            if(user != null)
+            {
+                return user;
+            }
+
+            return null;
         }
     }
 }

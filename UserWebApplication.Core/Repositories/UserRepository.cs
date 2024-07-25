@@ -39,8 +39,27 @@ namespace UserWebApplication.Core.Repositories
         public void Delete(int id)
         {
             var userId = _context.Users.FirstOrDefault(u => u.Id == id);
-            ((DbContext)_context).Remove(userId);
-            ((DbContext)_context).SaveChanges();
+
+            if(userId != null) 
+            {
+                ((DbContext)_context).Remove(userId);
+                ((DbContext)_context).SaveChanges();
+            }            
+        }
+
+        public async Task<User> Login(UserDto user)
+        {
+            if(user != null)
+            {
+                return await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == user.Password);
+            }
+
+            return null;
+        }
+
+        public async Task<User> GetIdAsync(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
     }
 }

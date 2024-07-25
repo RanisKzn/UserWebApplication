@@ -1,0 +1,140 @@
+﻿@page "/users"
+@using UserWebApplication.Client.Services
+@using UserWebApplication.Core.Entities
+@rendermode InteractiveServer
+
+<PageTitle>Пользователи</PageTitle>
+
+<div class="user-table">
+    @if (Users != null && Users.Any())
+    {
+        if (IsLoading)
+        {
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status"/>
+            </div>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Имя</th>
+                        <th>Электронная почта</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Users)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Name</td>
+                            <td>@user.Email</td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="() => EditUser(user.Id)">Редактировать</button>
+                                <button class="btn btn-danger" @onclick="() => DeleteUser(user.Id)">Удалить</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+    else
+    {
+        <p>Нет пользователей для отображения.</p>
+    }
+
+    <button @onclick="AddUser">Добавить пользователя</button>
+</div>
+
+<style>
+    .user-table {
+        margin: 20px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #ddd;
+        }
+
+    .btn {
+        margin: 0 5px;
+    }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+</style>
+
+@code {
+    [Inject]
+    protected UserService UserService { get; set; } = null!;
+
+    [Inject]
+    protected NavigationManager NavigationManager { get; set; } = null!;
+
+    private IEnumerable<User> Users { get; set; } = null!;
+
+    private bool IsLoading { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await GetUsers();
+        }
+    }
+
+    private async Task GetUsers()
+    {
+        IsLoading = true;
+        StateHasChanged();
+
+        Users = await UserService.GetAllAsync();
+
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private void EditUser(int id)
+    {
+        NavigationManager.NavigateTo($"/users/edit/{id}");
+    }
+
+    private void AddUser()
+    {
+        NavigationManager.NavigateTo("/users/add");
+    }
+
+    private async Task DeleteUser(int id)
+    {
+        await UserService.DeleteAsync(id);
+
+        await GetUsers();
+    }
+}
