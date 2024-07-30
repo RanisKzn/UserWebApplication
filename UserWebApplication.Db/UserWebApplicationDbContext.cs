@@ -27,6 +27,8 @@ namespace UserWebApplication.Db
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<UserRole> UserRoles { get; set; }
+
         public DbSet<Request> Requests { get; set; }
 
         public DbSet<RequestCategory> RequestCategories { get; set; }
