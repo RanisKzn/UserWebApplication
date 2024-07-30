@@ -12,6 +12,7 @@ builder.Services.AddHttpClient("Api", client =>
 });
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<UserRoleService>();
 builder.Services.AddScoped<RequestService>();
 builder.Services.AddScoped<RequestCategoryService>();
 builder.Services.AddSingleton<IUserProvider, UserProvider>();
